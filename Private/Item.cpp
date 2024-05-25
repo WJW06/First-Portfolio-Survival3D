@@ -3,7 +3,7 @@
 
 #include "Item.h"
 #include "Components/SphereComponent.h"
-#include "APlayer.h"
+#include "My_Player.h"
 //#include "InventoryComponent.h"
 
 AItem::AItem()
@@ -46,7 +46,7 @@ void AItem::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	AAPlayer* player = Cast<AAPlayer>(OtherActor);
+	AMy_Player* player = Cast<AMy_Player>(OtherActor);
 	if (IsValid(player))
 	{
 		//if (player->InventoryComponent != nullptr)

@@ -2,9 +2,11 @@
 
 
 #include "Survival3DGameModeBase.h"
-#include "APlayer.h"
+#include "My_Player.h"
+#include "My_PlayerController.h"
 
 ASurvival3DGameModeBase::ASurvival3DGameModeBase()
 {
-	DefaultPawnClass = AAPlayer::StaticClass();
+	DefaultPawnClass = AMy_Player::StaticClass();
+	PlayerControllerClass = AMy_PlayerController::StaticClass();
 }

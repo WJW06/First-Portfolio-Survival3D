@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "APlayer.h"
+#include "My_Player.h"
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "AnimInstance_Player.generated.h"
@@ -27,9 +27,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player", meta = (AllowPrivateAccess = "true"))
 		float pitch;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player", meta = (AllowPrivateAccess = "true"))
-		class AAPlayer* player;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player", meta = (AllowPrivateAccess = "true"))
 		bool isCrouch;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player", meta = (AllowPrivateAccess = "true"))
 		bool isJump;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player", meta = (AllowPrivateAccess = "true"))
+		class AMy_Player* my_player;
 };

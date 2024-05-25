@@ -13,20 +13,20 @@ void UAnimInstance_Player::NativeBeginPlay()
 {
 	Super::NativeBeginPlay();
 
-	player = Cast<AAPlayer>(TryGetPawnOwner());
+	my_player = Cast<AMy_Player>(TryGetPawnOwner());
 }
 
 void UAnimInstance_Player::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	
-	if (IsValid(player))
+	if (IsValid(my_player))
 	{
-		currentSpeed = player->GetVelocity().Size2D();
-		FRotator yawDirection = FRotator(0, player->GetControlRotation().Yaw, 0);
-		direction = CalculateDirection(player->GetVelocity(), yawDirection);
-		pitch = player->GetBaseAimRotation().Pitch;
-		isCrouch = player->GetIsCrouch();
-		isJump = player->GetMovementComponent()->IsFalling();
+		currentSpeed = my_player->GetVelocity().Size2D();
+		FRotator yawDirection = FRotator(0, my_player->GetControlRotation().Yaw, 0);
+		direction = CalculateDirection(my_player->GetVelocity(), yawDirection);
+		pitch = my_player->GetBaseAimRotation().Pitch;
+		isCrouch = my_player->GetIsCrouch();
+		isJump = my_player->GetMovementComponent()->IsFalling();
 	}
 }
