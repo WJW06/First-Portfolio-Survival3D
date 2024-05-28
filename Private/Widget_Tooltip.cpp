@@ -12,9 +12,10 @@ void UWidget_Tooltip::NativeConstruct()
 
 void UWidget_Tooltip::SetItemData(FItemData& inItemData)
 {
+	FText priceText = FText::FromString(FString::Printf(TEXT("Price: %d"), itemData.price));
 	itemData = inItemData;
 	name->SetText(FText::FromName(itemData.itemName));
-	price->SetText(FText::AsNumber(itemData.price));
+	price->SetText(priceText);
 	amount->SetText(FText::AsNumber(itemData.amount));
 	description->SetText(FText::FromString(itemData.description));
 	icon->SetBrushFromTexture(itemData.icon);

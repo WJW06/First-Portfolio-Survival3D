@@ -2,6 +2,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "ActorComponent_Inventory.h"
 
 AMy_Player::AMy_Player()
 {
@@ -35,6 +36,8 @@ AMy_Player::AMy_Player()
 	springArmCamera->SetupAttachment(RootComponent);
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	cameraComp->SetupAttachment(springArmCamera);
+
+	inventoryComponent = CreateDefaultSubobject<UActorComponent_Inventory>(TEXT("InventoryComponent"));
 
 	Tags.Add(FName(TEXT("Player")));
 }

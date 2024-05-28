@@ -27,8 +27,8 @@ private:
 		TArray<FItemData> itemDatas;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory", meta = (AllowPrivateAccess = true))
 		TSubclassOf<class UUserWidget> inventoryClass;
-	//UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory", meta = (AllowPrivateAccess = true))
-	//	class UInventoryWidget* inventoryWidget;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory", meta = (AllowPrivateAccess = true))
+		class UWidget_Inventory* inventoryWidget;
 
 	bool isShowInventory = false;
 };

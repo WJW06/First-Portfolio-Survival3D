@@ -10,14 +10,14 @@
 
 UWidget_Slot::UWidget_Slot(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FObjectFinder<UTexture2D> noneAsset(TEXT(""));
+	static ConstructorHelpers::FObjectFinder<UTexture2D> noneAsset(TEXT("Texture2D'/Game/Icon/Icons/NoneIcon.NoneIcon'"));
 
 	if (noneAsset.Succeeded())
 	{
 		noneTexture = noneAsset.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> tooltipAsset(TEXT(""));
+	static ConstructorHelpers::FClassFinder<UUserWidget> tooltipAsset(TEXT("WidgetBlueprint'/Game/Blueprint/Widgets/WB_Tooltip.WB_Tooltip_C'"));
 
 	if (tooltipAsset.Succeeded())
 	{

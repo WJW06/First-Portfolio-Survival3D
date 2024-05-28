@@ -4,13 +4,13 @@
 #include "Item.h"
 #include "Components/SphereComponent.h"
 #include "My_Player.h"
-//#include "InventoryComponent.h"
+#include "ActorComponent_Inventory.h"
 
 AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> DataAsset(TEXT(""));
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataAsset(TEXT("DataTable'/Game/DataTable/DT_ItemData.DT_ItemData'"));
 
 	if (DataAsset.Succeeded())
 	{
@@ -20,7 +20,6 @@ AItem::AItem()
 
 	itemMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ItemMesh"));
 	itemMesh->SetCollisionProfileName(FName(TEXT("Item")));
-	itemMesh->SetRelativeScale3D(FVector(0.5f));
 	itemMesh->SetSimulatePhysics(true);
 	RootComponent = itemMesh;
 	Tags.Add(FName(TEXT("Item")));
@@ -49,11 +48,11 @@ void AItem::NotifyActorBeginOverlap(AActor* OtherActor)
 	AMy_Player* player = Cast<AMy_Player>(OtherActor);
 	if (IsValid(player))
 	{
-		//if (player->InventoryComponent != nullptr)
-		//{
-		//	player->InventoryComponent->AddItem(itemData);
-		//	Destroy();
-		//}
+		if (player->inventoryComponent != nullptr)
+		{
+			player->inventoryComponent->AddItem(itemData);
+			Destroy();
+		}
 	}
 }
 
@@ -66,22 +65,24 @@ void AItem::OnConstruction(const FTransform& Transform)
 	if (&itemData != nullptr && itemMesh != nullptr)
 	{
 		itemMesh->SetSkeletalMesh(itemData.itemMesh);
+		if (itemData.itemType == EItemType::Item_Equipment) itemMesh->SetRelativeScale3D(FVector(0.3f));
+		else itemMesh->SetRelativeScale3D(FVector(0.5f));
 	}
 }
 
 void AItem::SetItemRowName(FName inItemName)
 {
-	//ItemRowHandle.RowName = InItemName;
+	FString itemName = inItemName.ToString();
 	FName rowName;
-	if (inItemName == FName(TEXT("SteelSword")))
+	if (itemName.Contains("Sword"))
 	{
 		rowName = TEXT("Sword");
 	}
-	else if (inItemName == FName(TEXT("Advanced Dagger")))
+	else if (itemName.Contains("Dagger"))
 	{
 		rowName = TEXT("Dagger");
 	}
-	else if (inItemName == FName(TEXT("Wind Force")))
+	else if (itemName.Contains("Bow"))
 	{
 		rowName = TEXT("Bow");
 	}
