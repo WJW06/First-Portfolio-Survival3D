@@ -2,11 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Widget_Inventory.generated.h"
-
+#include "Inventory_Widget.generated.h"
 
 UCLASS()
-class SURVIVAL3D_API UWidget_Inventory : public UUserWidget
+class SURVIVAL3D_API UInventory_Widget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
@@ -15,5 +14,5 @@ public:
 	void AddSlotToItem(struct FItemData& inItemData);
 public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory")
-		TArray<class UWidget_Slot*> slots;
+		TArray<class USlot_Widget*> slots;
 };

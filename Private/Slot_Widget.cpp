@@ -1,14 +1,15 @@
-#include "Widget_Slot.h"
+#include "Slot_Widget.h"
 #include "Components/Image.h"
 #include "Engine/Texture2D.h"
-#include "Widget_Tooltip.h"
+#include "Tooltip_Widget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "DragDropOperation_Slot.h"
+#include "Slot_DragDropOperation.h"
 #include "Item.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 
-UWidget_Slot::UWidget_Slot(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+
+USlot_Widget::USlot_Widget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	static ConstructorHelpers::FObjectFinder<UTexture2D> noneAsset(TEXT("Texture2D'/Game/Icon/Icons/NoneIcon.NoneIcon'"));
 
@@ -17,7 +18,7 @@ UWidget_Slot::UWidget_Slot(const FObjectInitializer& ObjectInitializer) : Super(
 		noneTexture = noneAsset.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> tooltipAsset(TEXT("WidgetBlueprint'/Game/Blueprint/Widgets/WB_Tooltip.WB_Tooltip_C'"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> tooltipAsset(TEXT("WidgetBlueprint'/Game/Blueprint/Widgets/WB_ToolTip.WB_Tooltip_C'"));
 
 	if (tooltipAsset.Succeeded())
 	{
@@ -25,7 +26,8 @@ UWidget_Slot::UWidget_Slot(const FObjectInitializer& ObjectInitializer) : Super(
 	}
 }
 
-FReply UWidget_Slot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+
+FReply USlot_Widget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FEventReply reply;
 	reply.NativeReply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
@@ -53,13 +55,14 @@ FReply UWidget_Slot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const 
 	return reply.NativeReply;
 }
 
-void UWidget_Slot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
+
+void USlot_Widget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
 	if (itemData.amount == 0) return;
 
-	UDragDropOperation_Slot* dragDrop = NewObject<UDragDropOperation_Slot>();
+	USlot_DragDropOperation* dragDrop = NewObject<USlot_DragDropOperation>();
 	SetVisibility(ESlateVisibility::HitTestInvisible);
 	dragDrop->itemData = itemData;
 	dragDrop->widgetRef = this;
@@ -68,23 +71,25 @@ void UWidget_Slot::NativeOnDragDetected(const FGeometry& InGeometry, const FPoin
 	OutOperation = dragDrop;
 }
 
-void UWidget_Slot::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+
+void USlot_Widget::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
 
 	SetVisibility(ESlateVisibility::Visible);
 }
 
-bool UWidget_Slot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+
+bool USlot_Widget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 
-	UDragDropOperation_Slot* dragDrop = Cast<UDragDropOperation_Slot>(InOperation);
+	USlot_DragDropOperation* dragDrop = Cast<USlot_DragDropOperation>(InOperation);
 	if (dragDrop->widgetRef != this)
 	{
 		FItemData temp = itemData;
 		SetItemData(dragDrop->itemData);
-		UWidget_Slot* newSlot = Cast<UWidget_Slot>(dragDrop->widgetRef);
+		USlot_Widget* newSlot = Cast<USlot_Widget>(dragDrop->widgetRef);
 		if (IsValid(newSlot))
 		{
 			newSlot->SetItemData(temp);
@@ -96,7 +101,8 @@ bool UWidget_Slot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEven
 	return false;
 }
 
-void UWidget_Slot::NativeConstruct()
+
+void USlot_Widget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -110,11 +116,12 @@ void UWidget_Slot::NativeConstruct()
 		icon->SetBrushSize(FVector2D(70, 70));
 	}
 
-	tooltip = Cast<UWidget_Tooltip>(CreateWidget(GetWorld(), tooltipClass));
+	tooltip = Cast<UTooltip_Widget>(CreateWidget(GetWorld(), tooltipClass));
 	tooltip->SetItemData(itemData);
 }
 
-void UWidget_Slot::SetItemData(FItemData& inItemData)
+
+void USlot_Widget::SetItemData(FItemData& inItemData)
 {
 	itemData = inItemData;
 	if (itemData.amount == 0)
@@ -131,7 +138,8 @@ void UWidget_Slot::SetItemData(FItemData& inItemData)
 	}
 }
 
-void UWidget_Slot::SpawnItem()
+
+void USlot_Widget::SpawnItem()
 {
 	ACharacter* player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FTransform transform = player->GetActorTransform();

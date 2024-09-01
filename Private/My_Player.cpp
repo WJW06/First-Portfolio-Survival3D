@@ -2,11 +2,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "ActorComponent_Inventory.h"
+#include "Inventory_ActorComponent.h"
 
 AMy_Player::AMy_Player()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> meshAsset(TEXT("SkeletalMesh'/Game/Asset/Man/Mesh/Full/SK_Man_Full_04.SK_Man_Full_04'"));
 
@@ -24,20 +25,31 @@ AMy_Player::AMy_Player()
 		GetMesh()->SetAnimInstanceClass(animAsset.Class);
 	}
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->JumpZVelocity = 400.f;
 
 	springArmCamera = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmCamera"));
-	springArmCamera->SocketOffset = FVector(0, 0, 0);
-	springArmCamera->TargetArmLength = 250.f;
-	springArmCamera->bDoCollisionTest = true;
-	springArmCamera->bUsePawnControlRotation = true;
 	springArmCamera->SetupAttachment(RootComponent);
+	springArmCamera->bInheritPitch = false;
+	springArmCamera->bInheritRoll = false;
+	springArmCamera->bInheritYaw = false;
+	springArmCamera->TargetArmLength = 800.f;
+	springArmCamera->SocketOffset = FVector(0, 0, 0);
+	springArmCamera->AddRelativeRotation(FRotator(-80, 0, 0));
+	springArmCamera->bDoCollisionTest = false;
+	springArmCamera->bUsePawnControlRotation = false; // Fix Camera
+
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	cameraComp->SetupAttachment(springArmCamera);
+	cameraComp->bUsePawnControlRotation = false;
 
-	inventoryComponent = CreateDefaultSubobject<UActorComponent_Inventory>(TEXT("InventoryComponent"));
+	inventoryComponent = CreateDefaultSubobject<UInventory_ActorComponent>(TEXT("InventoryComponent"));
 
 	Tags.Add(FName(TEXT("Player")));
 }
@@ -54,15 +66,19 @@ void AMy_Player::Tick(float DeltaTime)
 
 	if (isSmoothView) SmoothView();
 
-	springArmCamera->SetWorldLocation(GetMesh()->GetSocketLocation(cameraSocket));
+	if (isOneView) springArmCamera->SetWorldLocation(GetMesh()->GetSocketLocation(cameraSocket));
 }
 
 void AMy_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Lookup", this, &APawn::AddControllerPitchInput);
+	inputComponent = PlayerInputComponent;
+	if (isOneView)
+	{
+		PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+		PlayerInputComponent->BindAxis("Lookup", this, &APawn::AddControllerPitchInput);
+	}
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 }
@@ -73,9 +89,8 @@ void AMy_Player::ChangeView()
 
 	isOneView = !isOneView;
 	isSmoothView = true;
-
-	if (isOneView) springArmCamera->bDoCollisionTest = false;
-	else springArmCamera->bDoCollisionTest = true;
+	
+	SetupPlayerInputComponent(inputComponent);
 }
 
 void AMy_Player::SmoothView()
@@ -83,10 +98,15 @@ void AMy_Player::SmoothView()
 	if (isOneView && springArmCamera->TargetArmLength > 0.f)
 	{
 		springArmCamera->TargetArmLength -= 25.f;
+		if (springArmCamera->TargetArmLength <= 0.f)
+		{
+			springArmCamera->bUsePawnControlRotation = true; // Fix Camera
+		}
 	}
-	else if (!isOneView && springArmCamera->TargetArmLength < 250.f)
+	else if (!isOneView && springArmCamera->TargetArmLength < 800.f)
 	{
 		springArmCamera->TargetArmLength += 25.f;
+		springArmCamera->bUsePawnControlRotation = false; // Fix Camera
 	}
 	else isSmoothView = false;
 }

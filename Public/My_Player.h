@@ -32,6 +32,8 @@ private:
 		class APlayerCameraManager* cameraManager;
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 		FName cameraSocket = TEXT("Camera_Socket");
+
+	UInputComponent* inputComponent;
 public:
 	bool isRun;
 	bool isJump;
@@ -40,5 +42,5 @@ public:
 	bool isSmoothView;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		class UActorComponent_Inventory* inventoryComponent;
+		class UInventory_ActorComponent* inventoryComponent;
 };

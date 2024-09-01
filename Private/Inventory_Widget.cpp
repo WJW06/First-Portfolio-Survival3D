@@ -1,15 +1,15 @@
-#include "Widget_Inventory.h"
+#include "Inventory_Widget.h"
 #include "ItemData.h"
-#include "Widget_Slot.h"
+#include "Slot_Widget.h"
 
-void UWidget_Inventory::NativeConstruct()
+void UInventory_Widget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	for (int i = 0; i < 30; ++i)
 	{
 		FName slotName = FName(FString::Printf(TEXT("WB_Slot_%d"), i));
-		UWidget_Slot* slotWidget = Cast<UWidget_Slot>(GetWidgetFromName(slotName));
+		USlot_Widget* slotWidget = Cast<USlot_Widget>(GetWidgetFromName(slotName));
 		if (slotWidget == nullptr)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Not Slot!"));
@@ -19,9 +19,10 @@ void UWidget_Inventory::NativeConstruct()
 	}
 }
 
-void UWidget_Inventory::AddSlotToItem(FItemData& inItemData)
+
+void UInventory_Widget::AddSlotToItem(FItemData& inItemData)
 {
-	for (UWidget_Slot* slotWidget : slots)
+	for (USlot_Widget* slotWidget : slots)
 	{
 		if (slotWidget->itemData == inItemData && inItemData.itemType == EItemType::Item_Equipment)
 		{

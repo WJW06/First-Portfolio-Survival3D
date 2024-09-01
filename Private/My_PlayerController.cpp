@@ -1,11 +1,21 @@
 #include "My_PlayerController.h"
 #include "My_Player.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "ActorComponent_Inventory.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Inventory_ActorComponent.h"
+
 
 AMy_PlayerController::AMy_PlayerController()
 {
 
+}
+
+void AMy_PlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	bShowMouseCursor = true;
 }
 
 void AMy_PlayerController::OnPossess(APawn* InPawn)
@@ -27,28 +37,59 @@ void AMy_PlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Run"), IE_Released, this, &AMy_PlayerController::OffRun);
 	InputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &AMy_PlayerController::OnCrouch);
 	InputComponent->BindAction(TEXT("Crouch"), IE_Released, this, &AMy_PlayerController::OffCrouch);
-	InputComponent->BindAction(TEXT("ChangeView"), IE_Pressed, this, &AMy_PlayerController::OnChangeView);
+	//InputComponent->BindAction(TEXT("ChangeView"), IE_Pressed, this, &AMy_PlayerController::OnChangeView);
 	InputComponent->BindAction(TEXT("Inventory"), IE_Pressed, this, &AMy_PlayerController::OnInventory);
+}
+
+void AMy_PlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	if (!my_player->isOneView) LookMouseCursor();
 }
 
 
 void AMy_PlayerController::MoveForward(float value)
 {
+	//if (value != 0.f)
+	//{
+	//	const FRotator YawRot = FRotator(0, GetControlRotation().Yaw, 0);
+	//	const FVector Direction = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
+	//	my_player->AddMovementInput(Direction, value);
+	//}
+
 	if (value != 0.f)
 	{
-		const FRotator YawRot = FRotator(0, GetControlRotation().Yaw, 0);
-		const FVector Direction = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
-		my_player->AddMovementInput(Direction, value);
+		FVector direction = FVector::ForwardVector;
+		my_player->AddMovementInput(direction, value);
 	}
 }
 
 void AMy_PlayerController::MoveRight(float value)
 {
+	//if (value != 0.f)
+	//{
+	//	const FRotator YawRot = FRotator(0, GetControlRotation().Yaw, 0);
+	//	const FVector Direction = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
+	//	my_player->AddMovementInput(Direction, value);
+	//}
+
 	if (value != 0.f)
 	{
-		const FRotator YawRot = FRotator(0, GetControlRotation().Yaw, 0);
-		const FVector Direction = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
-		my_player->AddMovementInput(Direction, value);
+		FVector direction = FVector::RightVector;
+		my_player->AddMovementInput(direction, value);
+	}
+}
+
+void AMy_PlayerController::LookMouseCursor()
+{
+	FHitResult hit;
+	GetHitResultUnderCursor(ECC_Visibility, false, hit);
+
+	if (hit.bBlockingHit)
+	{
+		FRotator lookRatation = UKismetMathLibrary::FindLookAtRotation(my_player->GetActorLocation(), FVector(hit.Location.X, hit.Location.Y, my_player->GetActorLocation().Z));
+		my_player->SetActorRotation(lookRatation);
 	}
 }
 
@@ -81,6 +122,7 @@ void AMy_PlayerController::OffCrouch()
 void AMy_PlayerController::OnChangeView()
 {
 	my_player->ChangeView();
+	bShowMouseCursor = !my_player->isOneView;
 }
 
 void AMy_PlayerController::OnInventory()

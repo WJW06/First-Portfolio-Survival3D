@@ -1,9 +1,9 @@
-#include "ActorComponent_Inventory.h"
+#include "Inventory_ActorComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "Widget_Inventory.h"
+#include "Inventory_Widget.h"
 
-UActorComponent_Inventory::UActorComponent_Inventory()
+UInventory_ActorComponent::UInventory_ActorComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -16,14 +16,13 @@ UActorComponent_Inventory::UActorComponent_Inventory()
 }
 
 
-
-void UActorComponent_Inventory::BeginPlay()
+void UInventory_ActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (inventoryClass != nullptr)
 	{
-		inventoryWidget = Cast<UWidget_Inventory>(CreateWidget<UUserWidget>(GetWorld(), inventoryClass));
+		inventoryWidget = Cast<UInventory_Widget>(CreateWidget<UUserWidget>(GetWorld(), inventoryClass));
 		if (inventoryWidget != nullptr)
 		{
 			inventoryWidget->AddToViewport();
@@ -33,13 +32,14 @@ void UActorComponent_Inventory::BeginPlay()
 }
 
 
-void UActorComponent_Inventory::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UInventory_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
 
-void UActorComponent_Inventory::AddItem(FItemData& inItem)
+
+void UInventory_ActorComponent::AddItem(FItemData& inItem)
 {
 	int index = FindSameItem(inItem);
 
@@ -57,7 +57,8 @@ void UActorComponent_Inventory::AddItem(FItemData& inItem)
 	}
 }
 
-void UActorComponent_Inventory::ShowInventory()
+
+void UInventory_ActorComponent::ShowInventory()
 {
 	if (IsValid(inventoryWidget) == false) return;
 
@@ -82,7 +83,8 @@ void UActorComponent_Inventory::ShowInventory()
 	}
 }
 
-int UActorComponent_Inventory::FindSameItem(FItemData& inItemData)
+
+int UInventory_ActorComponent::FindSameItem(FItemData& inItemData)
 {
 	for (int i = 0; i < itemDatas.Num(); ++i)
 	{
@@ -92,7 +94,8 @@ int UActorComponent_Inventory::FindSameItem(FItemData& inItemData)
 	return -1;
 }
 
-TArray<FItemData> UActorComponent_Inventory::GetItemDatas()
+
+TArray<FItemData> UInventory_ActorComponent::GetItemDatas()
 {
 	return itemDatas;
 }

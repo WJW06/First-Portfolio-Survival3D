@@ -11,13 +11,17 @@ class SURVIVAL3D_API AMy_PlayerController : public APlayerController
 public:
 	AMy_PlayerController();
 protected:
+	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
+	virtual void PlayerTick(float DeltaTime) override;
 private:
 	UFUNCTION()
 		void MoveForward(float value);
 	UFUNCTION()
 		void MoveRight(float value);
+	UFUNCTION()
+		void LookMouseCursor();
 	UFUNCTION()
 		void OnRun();
 	UFUNCTION()

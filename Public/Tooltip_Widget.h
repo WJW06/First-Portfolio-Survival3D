@@ -3,10 +3,10 @@
 #include "ItemData.h"
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Widget_Tooltip.generated.h"
+#include "Tooltip_Widget.generated.h"
 
 UCLASS()
-class SURVIVAL3D_API UWidget_Tooltip : public UUserWidget
+class SURVIVAL3D_API UTooltip_Widget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:

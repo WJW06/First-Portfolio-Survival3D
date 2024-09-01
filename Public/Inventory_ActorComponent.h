@@ -3,15 +3,15 @@
 #include "ItemData.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "ActorComponent_Inventory.generated.h"
+#include "Inventory_ActorComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SURVIVAL3D_API UActorComponent_Inventory : public UActorComponent
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class SURVIVAL3D_API UInventory_ActorComponent : public UActorComponent
 {
 	GENERATED_BODY()
-public:	
-	UActorComponent_Inventory();
+public:
+	UInventory_ActorComponent();
 protected:
 	virtual void BeginPlay() override;
 public:
@@ -28,7 +28,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory", meta = (AllowPrivateAccess = true))
 		TSubclassOf<class UUserWidget> inventoryClass;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Inventory", meta = (AllowPrivateAccess = true))
-		class UWidget_Inventory* inventoryWidget;
+		class UInventory_Widget* inventoryWidget;
 
 	bool isShowInventory = false;
 };

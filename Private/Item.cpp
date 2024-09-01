@@ -4,7 +4,7 @@
 #include "Item.h"
 #include "Components/SphereComponent.h"
 #include "My_Player.h"
-#include "ActorComponent_Inventory.h"
+#include "Inventory_ActorComponent.h"
 
 AItem::AItem()
 {
@@ -32,7 +32,7 @@ AItem::AItem()
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void AItem::Tick(float DeltaTime)

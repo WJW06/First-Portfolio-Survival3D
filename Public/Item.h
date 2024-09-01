@@ -9,13 +9,13 @@ UCLASS()
 class SURVIVAL3D_API AItem : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
 	AItem();
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 public:
 	FORCEINLINE FItemData& GetItemData()

@@ -1,16 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "Widget_Tooltip.h"
+#include "Tooltip_Widget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-void UWidget_Tooltip::NativeConstruct()
+
+void UTooltip_Widget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UWidget_Tooltip::SetItemData(FItemData& inItemData)
+
+void UTooltip_Widget::SetItemData(FItemData& inItemData)
 {
 	FText priceText = FText::FromString(FString::Printf(TEXT("Price: %d"), itemData.price));
 	itemData = inItemData;
